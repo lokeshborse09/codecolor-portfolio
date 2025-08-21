@@ -12,9 +12,7 @@ const Footer: React.FC = () => {
           </div>
           
           <div className="flex items-center text-gray-400">
-            <span>© 2025 Code and Colors Everywhere. Made with</span>
-            <Heart className="h-4 w-4 text-red-500 mx-2 fill-current" />
-            <span>for visual storytelling</span>
+            <span>© 2025 Code and Colors </span>
           </div>
         </div>
 
