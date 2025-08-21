@@ -45,3 +45,20 @@ cd codecolor-portfolio
 npm install
 npm run dev
 
+codecolor-portfolio/
+├── public/
+│   └── images/
+│       └── me.jpeg
+├── src/
+│   ├── components/
+│   │   ├── About.tsx
+│   │   ├── Showreel.tsx
+│   │   └── Contact.tsx
+│   ├── App.tsx
+│   ├── index.tsx
+│   └── styles.css
+├── package.json
+├── tailwind.config.js
+└── README.md
+npm run build
+# Host the contents of the 'dist/' folder on any static host.
