@@ -21,19 +21,6 @@ Explore the live site here:
 - **Social Links**: Quick access to Instagram, YouTube, and WhatsApp.
 - **Easy Image Management**: Uses `/public/images/` for reliable hosting of images post-deployment.
 
----
-
-##  Table of Contents
-
-- [Installation](#installation)  
-- [Usage](#usage)  
-- [Project Structure](#project-structure)  
-- [Customizing](#customizing)  
-- [Deployment](#deployment)  
-- [Tech Stack](#tech-stack)  
-- [Contact](#contact)
-
----
 
 ##  Installation
 
@@ -41,24 +28,3 @@ To run the project locally:
 
 ```bash
 git clone https://github.com/lokeshborse09/codecolor-portfolio.git
-cd codecolor-portfolio
-npm install
-npm run dev
-
-codecolor-portfolio/
-├── public/
-│   └── images/
-│       └── me.jpeg
-├── src/
-│   ├── components/
-│   │   ├── About.tsx
-│   │   ├── Showreel.tsx
-│   │   └── Contact.tsx
-│   ├── App.tsx
-│   ├── index.tsx
-│   └── styles.css
-├── package.json
-├── tailwind.config.js
-└── README.md
-npm run build
-# Host the contents of the 'dist/' folder on any static host.
