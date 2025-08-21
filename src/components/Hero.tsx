@@ -36,10 +36,7 @@ const Hero: React.FC = () => {
           </p>
 
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            <button className="group bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-8 py-4 rounded-full font-bold text-lg   hover:scale-105 transition-all duration-300 flex items-center gap-2">
-              <Play className="h-5 w-5 group-hover:scale-110 transition-transform" />
-              Watch Showreel
-            </button>
+            
             
             <button 
               onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
