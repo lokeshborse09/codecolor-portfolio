@@ -15,7 +15,7 @@ const Hero: React.FC = () => {
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70 z-10"></div>
         <img 
-          src="https://raw.githubusercontent.com/lokeshborse09/codecolor-portfolio/main/public/images/top-view-photo-camera-indoors-still-life.jpg?raw=true"
+          src="https://raw.githubusercontent.com/lokeshborse09/codecolor-portfolio/main/src/components/top-view-photo-camera-indoors-still-life.jpg"
           alt="Cinematic background"
           className="w-full h-full object-cover"
         />
