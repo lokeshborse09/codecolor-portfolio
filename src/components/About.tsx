@@ -46,7 +46,7 @@ const About: React.FC = () => {
             <div className="relative overflow-hidden rounded-2xl">
               {/* ✅ Use public folder reference */}
               <img 
-                src="src/components/me.jpeg"
+                src="https://github.com/lokeshborse09/codecolor-portfolio/blob/main/src/components/me.jpeg"
                 alt="Video Editor at work"
                 className="w-full h-[600px] object-cover hover:scale-105 transition-transform duration-700"
               />
