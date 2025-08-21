@@ -7,7 +7,7 @@ A sleek and professional portfolio website built using **React**, **Tailwind CSS
 ##  Demo
 
 Explore the live site here:  
-[https://your-deployed-portfolio-url.com](https://codeandcolor.netlify.app)
+[https://codeandcolor.netlify.app](https://codeandcolor.netlify.app)
 
 ---
 
