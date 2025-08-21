@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row items-center justify-between">
           <div className="flex items-center space-x-2 mb-4 md:mb-0">
             <Camera className="h-8 w-8 text-yellow-400" />
-            <span className="text-2xl font-bold text-white">Code and Colors Everywhere</span>
+            <span className="text-2xl font-bold text-white">Code and Colors </span>
           </div>
           
           <div className="flex items-center text-gray-400">
