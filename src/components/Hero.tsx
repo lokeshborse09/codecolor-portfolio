@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 const Hero: React.FC = () => {
   const scrollToAbout = () => {
@@ -15,7 +15,7 @@ const Hero: React.FC = () => {
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70 z-10"></div>
         <img 
-          src="https://raw.githubusercontent.com/lokeshborse09/codecolor-portfolio/main/src/components/top-view-photo-camera-indoors-still-life.jpg"
+          src="https://raw.githubusercontent.com/lokeshborse09/codecolor-portfolio/main/public/images/top-view-photo-camera-indoors-still-life.jpg?raw=true"
           alt="Cinematic background"
           className="w-full h-full object-cover"
         />
@@ -35,9 +35,8 @@ const Hero: React.FC = () => {
             video editing, and content creation that captivates audiences worldwide.
           </p>
 
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            
-            
+          {/* ✅ Only "Get In Touch" button remains */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <button 
               onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
               className="border-2 border-yellow-400 text-yellow-400 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-400 hover:text-black transition-all duration-300"
@@ -47,6 +46,7 @@ const Hero: React.FC = () => {
           </div>
         </div>
 
+        {/* Scroll Down Button */}
         <button 
           onClick={scrollToAbout}
           className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white hover:text-yellow-400 transition-colors duration-300 animate-bounce"
