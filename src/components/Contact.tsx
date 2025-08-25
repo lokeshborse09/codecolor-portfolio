@@ -177,7 +177,21 @@ const Contact: React.FC = () => {
                   />
                 </div>
               </div>
-
+<div>
+  <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">
+    Phone Number
+  </label>
+  <input
+    type="tel"
+    id="phone"
+    name="phone"
+    value={formData.phone || ""}
+    onChange={handleChange}
+    required
+    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors"
+    placeholder="+91 9876543210"
+  />
+</div>
               <div>
                 <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
                   Subject
