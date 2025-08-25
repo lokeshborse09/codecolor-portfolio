@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Instagram, Youtube, Send } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
+import { createClient } from '@supabase/supabase-js';
+import emailjs from 'emailjs-com';
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -16,10 +23,7 @@ const Contact: React.FC = () => {
   }>({ type: null, message: '' });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,32 +32,33 @@ const Contact: React.FC = () => {
     setSubmitStatus({ type: null, message: '' });
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/contact-form`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      // 1️⃣ Save to Supabase directly
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert([{ ...formData, submitted_at: new Date().toISOString() }]);
+      if (error) throw error;
+
+      // 2️⃣ Send Email via EmailJS
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID!,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID!,
+        {
+          ...formData,
+          time: new Date().toLocaleString(),
         },
-        body: JSON.stringify(formData),
+        import.meta.env.VITE_EMAILJS_USER_ID!
+      );
+
+      setSubmitStatus({
+        type: 'success',
+        message: 'Thank you! Your message has been sent successfully.'
       });
-
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        setSubmitStatus({
-          type: 'success',
-          message: `Thank you! Your message has been sent successfully. ${result.data.email_sent ? 'Email notification sent.' : ''} I'll get back to you soon.`
-        });
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
-        setSubmitStatus({
-          type: 'error',
-          message: result.details ? `${result.error}: ${result.details.join(', ')}` : result.error || 'Something went wrong. Please try again.'
-        });
-      }
-    } catch (error) {
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      console.error(err);
       setSubmitStatus({
         type: 'error',
-        message: 'Network error. Please check your connection and try again.'
+        message: 'Something went wrong. Please try again.'
       });
     } finally {
       setIsSubmitting(false);
@@ -63,7 +68,7 @@ const Contact: React.FC = () => {
   const socialLinks = [
     { icon: Instagram, href: 'https://www.instagram.com/code_and_color1?igsh=b2plZjdjNDl4ZG8x', label: 'Instagram' },
     { icon: Youtube, href: 'https://youtube.com/@codecolor-v8l?si=jdFBg2BVKbAChh9j', label: 'YouTube' },
-    { icon: FaWhatsapp, href: 'https://wa.me/918623083109', label: 'WhatsApp' } // WhatsApp link
+    { icon: FaWhatsapp, href: 'https://wa.me/918623083109', label: 'WhatsApp' }
   ];
 
   return (
@@ -80,6 +85,7 @@ const Contact: React.FC = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-16">
+          {/* Contact Info */}
           <div>
             <h3 className="text-2xl font-bold text-white mb-8">Let's Start a Conversation</h3>
             
@@ -128,6 +134,7 @@ const Contact: React.FC = () => {
             </div>
           </div>
 
+          {/* Contact Form */}
           <div>
             <form onSubmit={handleSubmit} className="space-y-6">
               {submitStatus.type && (
