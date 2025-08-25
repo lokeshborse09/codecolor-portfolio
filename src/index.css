@@ -57,15 +57,12 @@ html {
 .card-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+
 .card-hover:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px -10px rgba(249, 115, 22, 0.3);
-}
-
-/*.card-hover:hover {
-  transform: translateY(-8px);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-}*/
+}
 
 /* Button animations */
 .btn-glow {
@@ -94,19 +91,14 @@ img {
 }
 
 /* Focus styles for accessibility */
-button:focus,
-input:focus,
-textarea:focus {
-  outline: 2px solid #f97316;
-  outline-offset: 2px;
-}
 
-/*button:focus,
+
+button:focus,
 input:focus,
 textarea:focus {
   outline: 2px solid #fbbf24;
   outline-offset: 2px;
-}*/
+}
 
 /* Responsive typography */
 @media (max-width: 640px) {
