@@ -49,7 +49,7 @@ const Contact: React.FC = () => {
       // 2️⃣ Send email via EmailJS
       const serviceID = 'service_b2v5f4q';
       const templateID = 'template_g83cdxo';
-      const userID = 'YOUR_USER_ID';
+      const userID = 'vtAF-qnS5DZ5fbYUp';
       const templateParams = {
         name: formData.name,
         email: formData.email,
