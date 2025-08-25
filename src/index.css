@@ -24,21 +24,6 @@ html {
 }
 
 /* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #f9fafb; /* light gray */
-}
-
-::-webkit-scrollbar-thumb {
-  background: #f97316; /* orange */
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #ea580c; /* darker orange */
-}
 
 /*
 ::-webkit-scrollbar-track {
