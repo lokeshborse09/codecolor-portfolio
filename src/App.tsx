@@ -14,7 +14,7 @@ function App() {
     document.documentElement.style.scrollBehavior = 'smooth';
     
     // Update page title
-    document.title = 'Code and Colors Everywhere - Video Editor & Cinematographer';
+    document.title = 'Code and Colors  - Video Editor & Cinematographer';
     
     // Animation on scroll
     const observerOptions = {
