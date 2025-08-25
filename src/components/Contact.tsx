@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Instagram, Youtube, Send } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -30,36 +24,20 @@ const Contact: React.FC = () => {
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: '' });
 
+    const serviceID = 'YOUR_SERVICE_ID';
+    const templateID = 'YOUR_TEMPLATE_ID';
+    const userID = 'YOUR_USER_ID';
+
+    const templateParams = {
+      name: formData.name,
+      email: formData.email,
+      subject: formData.subject,
+      message: formData.message,
+      time: new Date().toLocaleString(),
+    };
+
     try {
-      // 1️⃣ Save to Supabase
-      const { data, error } = await supabase
-        .from('contact_submissions')
-        .insert([
-          { 
-            name: formData.name,
-            email: formData.email,
-            subject: formData.subject,
-            message: formData.message,
-            submitted_at: new Date().toISOString()
-          }
-        ]);
-
-      if (error) throw error;
-
-      // 2️⃣ Send email via EmailJS
-      const serviceID = 'service_b2v5f4q';
-      const templateID = 'template_g83cdxo';
-      const userID = 'vtAF-qnS5DZ5fbYUp';
-      const templateParams = {
-        name: formData.name,
-        email: formData.email,
-        subject: formData.subject,
-        message: formData.message,
-        time: new Date().toLocaleString(),
-        to_email: 'codecolor09@gmail.com', // your inbox
-      };
-
-      const emailRes = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -70,14 +48,15 @@ const Contact: React.FC = () => {
         })
       });
 
-      if (!emailRes.ok) throw new Error('Email sending failed');
-
-      // 3️⃣ Success
-      setSubmitStatus({ type: 'success', message: 'Message sent and saved successfully!' });
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    } catch (err: any) {
+      if (res.ok) {
+        setSubmitStatus({ type: 'success', message: 'Message sent successfully!' });
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setSubmitStatus({ type: 'error', message: 'Failed to send message.' });
+      }
+    } catch (err) {
       console.error(err);
-      setSubmitStatus({ type: 'error', message: err.message || 'Something went wrong. Please try again.' });
+      setSubmitStatus({ type: 'error', message: 'Network error. Try again.' });
     } finally {
       setIsSubmitting(false);
     }
@@ -106,6 +85,7 @@ const Contact: React.FC = () => {
           {/* Contact Info */}
           <div>
             <h3 className="text-2xl font-bold text-white mb-8">Let's Start a Conversation</h3>
+            
             <div className="space-y-6 mb-8">
               <div className="flex items-center">
                 <Mail className="h-6 w-6 text-yellow-400 mr-4" />
@@ -114,6 +94,7 @@ const Contact: React.FC = () => {
                   <div className="text-gray-300">codecolor09@gmail.com</div>
                 </div>
               </div>
+              
               <div className="flex items-center">
                 <Phone className="h-6 w-6 text-yellow-400 mr-4" />
                 <div>
@@ -121,6 +102,7 @@ const Contact: React.FC = () => {
                   <div className="text-gray-300">+91 8623083109</div>
                 </div>
               </div>
+              
               <div className="flex items-center">
                 <MapPin className="h-6 w-6 text-yellow-400 mr-4" />
                 <div>
@@ -164,7 +146,9 @@ const Contact: React.FC = () => {
 
               <div className="grid sm:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">Name</label>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+                    Name
+                  </label>
                   <input
                     type="text"
                     id="name"
@@ -176,8 +160,11 @@ const Contact: React.FC = () => {
                     placeholder="Your Name"
                   />
                 </div>
+                
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                    Email
+                  </label>
                   <input
                     type="email"
                     id="email"
@@ -192,7 +179,9 @@ const Contact: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">Subject</label>
+                <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
+                  Subject
+                </label>
                 <input
                   type="text"
                   id="subject"
@@ -206,7 +195,9 @@ const Contact: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">Message</label>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
+                  Message
+                </label>
                 <textarea
                   id="message"
                   name="message"
