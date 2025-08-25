@@ -6,6 +6,7 @@ const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     subject: '',
     message: ''
   });
@@ -31,6 +32,7 @@ const Contact: React.FC = () => {
     const templateParams = {
       name: formData.name,
       email: formData.email,
+      phone: formData.phone,
       subject: formData.subject,
       message: formData.message,
       time: new Date().toLocaleString(),
