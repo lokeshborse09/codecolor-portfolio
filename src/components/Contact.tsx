@@ -24,9 +24,9 @@ const Contact: React.FC = () => {
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: '' });
 
-    const serviceID = 'service_b2v5f4q';
-    const templateID = 'template_g83cdxo';
-    const userID = 'vtAF-qnS5DZ5fbYUp';
+    const serviceID = 'service_b2v5f4q'; // Your EmailJS Service ID
+    const templateID = 'template_g83cdxo'; // Your EmailJS Template ID
+    const userID = 'vtAF-qnS5DZ5fbYUp'; // Your EmailJS User ID
 
     const templateParams = {
       name: formData.name,
@@ -34,6 +34,7 @@ const Contact: React.FC = () => {
       subject: formData.subject,
       message: formData.message,
       time: new Date().toLocaleString(),
+      to_email: 'codecolor09@gmail.com', // <-- Force all emails to this inbox
     };
 
     try {
@@ -49,10 +50,10 @@ const Contact: React.FC = () => {
       });
 
       if (res.ok) {
-        setSubmitStatus({ type: 'success', message: 'Message sent successfully!' });
+        setSubmitStatus({ type: 'success', message: 'Message sent successfully! You will receive it in your inbox.' });
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        setSubmitStatus({ type: 'error', message: 'Failed to send message.' });
+        setSubmitStatus({ type: 'error', message: 'Failed to send message. Please try again.' });
       }
     } catch (err) {
       console.error(err);
