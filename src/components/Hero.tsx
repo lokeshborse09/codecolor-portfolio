@@ -24,7 +24,7 @@ const Hero: React.FC = () => {
       <div className="relative z-20 text-center px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
         <div className="animate-fade-in-up">
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-            Video Editor & Cinematographer<br />
+            Video Editor | Cinematographer<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">
                Lokesh Borse
             </span>
