@@ -6,7 +6,7 @@ const About: React.FC = () => {
     { icon: Camera, value: '6+', label: 'Years Experience' },
     { icon: Film, value: '200+', label: 'Projects Completed' },
     { icon: Users, value: '150+', label: 'Happy Clients' },
-    { icon: Award, value: '25+', label: 'Awards Won' },
+    { icon: Award, value: '5+', label: 'Awards Won' },
   ];
 
   return (
