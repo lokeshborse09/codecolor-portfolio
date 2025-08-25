@@ -6,3 +6,10 @@ export default {
   },
   plugins: [],
 };
+module.exports = {
+  darkMode: 'class', // or 'media'
+}
+<html class="dark">
+<div class="bg-white text-black dark:bg-black dark:text-white">
+  Themed Content
+</div>
