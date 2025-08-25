@@ -24,9 +24,9 @@ const Contact: React.FC = () => {
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: '' });
 
-    const serviceID = 'YOUR_SERVICE_ID';
-    const templateID = 'YOUR_TEMPLATE_ID';
-    const userID = 'YOUR_USER_ID';
+    const serviceID = 'service_b2v5f4q';
+    const templateID = 'template_g83cdxo';
+    const userID = 'vtAF-qnS5DZ5fbYUp';
 
     const templateParams = {
       name: formData.name,
