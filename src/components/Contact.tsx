@@ -32,7 +32,6 @@ const Contact: React.FC = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify(formData),
       });
@@ -42,13 +41,13 @@ const Contact: React.FC = () => {
       if (response.ok && result.success) {
         setSubmitStatus({
           type: 'success',
-          message: 'Thank you! Your message has been sent successfully. I\'ll get back to you soon.'
+          message: `Thank you! Your message has been sent successfully. ${result.data.email_sent ? 'Email notification sent.' : ''} I'll get back to you soon.`
         });
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
         setSubmitStatus({
           type: 'error',
-          message: result.error || 'Something went wrong. Please try again.'
+          message: result.details ? `${result.error}: ${result.details.join(', ')}` : result.error || 'Something went wrong. Please try again.'
         });
       }
     } catch (error) {

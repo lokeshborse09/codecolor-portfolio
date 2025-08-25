@@ -1,6 +1,3 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'npm:@supabase/supabase-js@2'
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -14,13 +11,10 @@ interface ContactFormData {
   message: string;
 }
 
-interface EmailConfig {
-  smtp_host: string;
-  smtp_port: number;
-  smtp_user: string;
-  smtp_pass: string;
-  from_email: string;
-  to_email: string;
+interface EmailJSConfig {
+  service_id: string;
+  template_id: string;
+  user_id: string;
 }
 
 // Email validation regex
@@ -52,64 +46,57 @@ function validateFormData(data: any): { isValid: boolean; errors: string[] } {
   };
 }
 
-// Send email notification
-async function sendEmailNotification(formData: ContactFormData, emailConfig: EmailConfig) {
+// Send email notification using EmailJS
+async function sendEmailNotification(formData: ContactFormData, emailConfig: EmailJSConfig) {
   try {
-    const emailBody = `
-New Contact Form Submission
-
-Name: ${formData.name}
-Email: ${formData.email}
-Subject: ${formData.subject}
-
-Message:
-${formData.message}
-
----
-Submitted at: ${new Date().toISOString()}
-    `.trim();
-
-    // Using SMTP with basic authentication
     const emailPayload = {
-      from: emailConfig.from_email,
-      to: emailConfig.to_email,
-      subject: `New Contact Form: ${formData.subject}`,
-      text: emailBody,
-      html: emailBody.replace(/\n/g, '<br>')
+      service_id: emailConfig.service_id,
+      template_id: emailConfig.template_id,
+      user_id: emailConfig.user_id,
+      template_params: {
+        from_name: formData.name,
+        from_email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        to_name: 'Lokesh Borse', // Your name
+        reply_to: formData.email
+      }
     };
 
-    // For demonstration, we'll use a simple SMTP approach
-    // In production, you might want to use SendGrid, Mailgun, or similar
     const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        service_id: 'your_service_id', // You'll need to configure this
-        template_id: 'your_template_id', // You'll need to configure this
-        user_id: 'your_user_id', // You'll need to configure this
-        template_params: {
-          from_name: formData.name,
-          from_email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-          to_email: emailConfig.to_email
-        }
-      })
+      body: JSON.stringify(emailPayload)
     });
 
-    return response.ok;
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('EmailJS API error:', errorText);
+      return false;
+    }
+
+    return true;
   } catch (error) {
     console.error('Email sending failed:', error);
     return false;
   }
 }
 
-serve(async (req) => {
+// Get client IP address
+function getClientIP(request: Request): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  const realIP = request.headers.get('x-real-ip');
+  const cfConnectingIP = request.headers.get('cf-connecting-ip');
+  
+  return forwarded?.split(',')[0] || realIP || cfConnectingIP || 'unknown';
+}
+
+Deno.serve(async (req: Request) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok', { headers: corsHeaders });
   }
 
   try {
@@ -121,14 +108,14 @@ serve(async (req) => {
           status: 405, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
         }
-      )
+      );
     }
 
     // Parse request body
-    const formData: ContactFormData = await req.json()
+    const formData: ContactFormData = await req.json();
 
     // Validate form data
-    const validation = validateFormData(formData)
+    const validation = validateFormData(formData);
     if (!validation.isValid) {
       return new Response(
         JSON.stringify({ 
@@ -139,17 +126,33 @@ serve(async (req) => {
           status: 400, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
         }
-      )
+      );
     }
 
     // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    const supabase = createClient(supabaseUrl, supabaseKey)
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      return new Response(
+        JSON.stringify({ error: 'Server configuration error' }),
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    // Create Supabase client
+    const { createClient } = await import('npm:@supabase/supabase-js@2');
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Get client IP address
+    const clientIP = getClientIP(req);
 
     // Save to database
     const { data: dbData, error: dbError } = await supabase
-      .from('contact_submissions') // You can change this table name
+      .from('contact_submissions')
       .insert([
         {
           name: formData.name.trim(),
@@ -157,13 +160,13 @@ serve(async (req) => {
           subject: formData.subject.trim(),
           message: formData.message.trim(),
           submitted_at: new Date().toISOString(),
-          ip_address: req.headers.get('x-forwarded-for') || 'unknown'
+          ip_address: clientIP
         }
       ])
-      .select()
+      .select();
 
     if (dbError) {
-      console.error('Database error:', dbError)
+      console.error('Database error:', dbError);
       return new Response(
         JSON.stringify({ 
           error: 'Failed to save submission', 
@@ -173,23 +176,22 @@ serve(async (req) => {
           status: 500, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
         }
-      )
+      );
     }
 
-    // Email configuration (you'll need to set these environment variables)
-    const emailConfig: EmailConfig = {
-      smtp_host: Deno.env.get('SMTP_HOST') || 'smtp.gmail.com',
-      smtp_port: parseInt(Deno.env.get('SMTP_PORT') || '587'),
-      smtp_user: Deno.env.get('SMTP_USER') || '',
-      smtp_pass: Deno.env.get('SMTP_PASS') || '',
-      from_email: Deno.env.get('FROM_EMAIL') || '',
-      to_email: Deno.env.get('TO_EMAIL') || ''
-    }
+    // EmailJS configuration
+    const emailConfig: EmailJSConfig = {
+      service_id: Deno.env.get('EMAILJS_SERVICE_ID') || '',
+      template_id: Deno.env.get('EMAILJS_TEMPLATE_ID') || '',
+      user_id: Deno.env.get('EMAILJS_USER_ID') || ''
+    };
 
-    // Send email notification (optional - won't fail if email fails)
-    let emailSent = false
-    if (emailConfig.smtp_user && emailConfig.to_email) {
-      emailSent = await sendEmailNotification(formData, emailConfig)
+    // Send email notification
+    let emailSent = false;
+    if (emailConfig.service_id && emailConfig.template_id && emailConfig.user_id) {
+      emailSent = await sendEmailNotification(formData, emailConfig);
+    } else {
+      console.warn('EmailJS configuration incomplete - email not sent');
     }
 
     // Return success response
@@ -207,19 +209,19 @@ serve(async (req) => {
         status: 200, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
       }
-    )
+    );
 
   } catch (error) {
-    console.error('Unexpected error:', error)
+    console.error('Unexpected error:', error);
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error', 
-        details: error.message 
+        details: error instanceof Error ? error.message : 'Unknown error'
       }),
       { 
         status: 500, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
       }
-    )
+    );
   }
-})
+});
