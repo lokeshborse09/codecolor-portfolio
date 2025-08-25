@@ -116,9 +116,16 @@ img {
 button:focus,
 input:focus,
 textarea:focus {
-  outline: 2px solid #fbbf24;
+  outline: 2px solid #f97316;
   outline-offset: 2px;
 }
+
+/*button:focus,
+input:focus,
+textarea:focus {
+  outline: 2px solid #fbbf24;
+  outline-offset: 2px;
+}*/
 
 /* Responsive typography */
 @media (max-width: 640px) {
