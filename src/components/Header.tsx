@@ -34,14 +34,16 @@ const Header: React.FC = () => {
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled ? 'bg-black/90 backdrop-blur-sm' : 'bg-transparent'
     }`}>
-      <div className="flex items-center space-x-2">
-  <img 
-    src="https://lh3.googleusercontent.com/a/ACg8ocJxr2GFwY0bhTDWWPWf3sbrUwQFihKqZdVPb7eRSM9zny-0e2s=s288-c-no" 
-    alt="Code and Colors Logo" 
-    className="h-8 w-8 rounded-full object-cover" 
-  />
-  <span className="text-xl font-bold text-white">Code and Colors</span>
-</div>
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center space-x-2">
+            <img 
+              src="https://lh3.googleusercontent.com/a/ACg8ocJxr2GFwY0bhTDWWPWf3sbrUwQFihKqZdVPb7eRSM9zny-0e2s=s288-c-no" 
+              alt="Code and Colors Logo" 
+              className="h-8 w-8 rounded-full object-cover" 
+            />
+            <span className="text-xl font-bold text-white">Code and Colors</span>
+          </div>
           
           <nav className="hidden md:flex space-x-8">
             {navItems.map((item) => (
