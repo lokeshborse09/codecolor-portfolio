@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Instagram, Youtube, Send } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { createClient } from '@supabase/supabase-js';
-import emailjs from '@emailjs/browser';
-
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -51,7 +49,7 @@ const Contact: React.FC = () => {
       // 2️⃣ Send email via EmailJS
       const serviceID = 'service_b2v5f4q';
       const templateID = 'template_g83cdxo';
-      const userID = 'vtAF-qnS5DZ5fbYUp';
+      const userID = 'YOUR_USER_ID';
       const templateParams = {
         name: formData.name,
         email: formData.email,
