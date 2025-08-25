@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Instagram, Youtube, Send } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
-import { createClient } from '@supabase/supabase-js';
-import emailjs from 'emailjs-com';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -31,35 +24,39 @@ const Contact: React.FC = () => {
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: '' });
 
+    const serviceID = 'YOUR_SERVICE_ID';
+    const templateID = 'YOUR_TEMPLATE_ID';
+    const userID = 'YOUR_USER_ID';
+
+    const templateParams = {
+      name: formData.name,
+      email: formData.email,
+      subject: formData.subject,
+      message: formData.message,
+      time: new Date().toLocaleString(),
+    };
+
     try {
-      // 1️⃣ Save to Supabase directly
-      const { error } = await supabase
-        .from('contact_submissions')
-        .insert([{ ...formData, submitted_at: new Date().toISOString() }]);
-      if (error) throw error;
-
-      // 2️⃣ Send Email via EmailJS
-      await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID!,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID!,
-        {
-          ...formData,
-          time: new Date().toLocaleString(),
-        },
-        import.meta.env.VITE_EMAILJS_USER_ID!
-      );
-
-      setSubmitStatus({
-        type: 'success',
-        message: 'Thank you! Your message has been sent successfully.'
+      const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_id: serviceID,
+          template_id: templateID,
+          user_id: userID,
+          template_params: templateParams
+        })
       });
-      setFormData({ name: '', email: '', subject: '', message: '' });
+
+      if (res.ok) {
+        setSubmitStatus({ type: 'success', message: 'Message sent successfully!' });
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setSubmitStatus({ type: 'error', message: 'Failed to send message.' });
+      }
     } catch (err) {
       console.error(err);
-      setSubmitStatus({
-        type: 'error',
-        message: 'Something went wrong. Please try again.'
-      });
+      setSubmitStatus({ type: 'error', message: 'Network error. Try again.' });
     } finally {
       setIsSubmitting(false);
     }
